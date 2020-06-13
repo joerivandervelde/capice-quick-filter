@@ -27,6 +27,7 @@ public class Main
             System.out.println("- Case sample ID (ie. proband,index).");
             System.out.println("- [optional] Control sample ID(s), " +
                     "comma-separated if multiple.");
+            System.exit(0);
         }
 
         /*
