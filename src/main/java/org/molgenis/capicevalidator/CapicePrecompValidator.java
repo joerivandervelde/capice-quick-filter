@@ -127,6 +127,14 @@ public class CapicePrecompValidator {
             Double score = Double.parseDouble(split[4]);
 
             /*
+             * Add first position on first encounter
+             */
+            if(currentChrom.equals("1") && !chromMinPos.containsKey("1"))
+            {
+                chromMinPos.put("1", currentPos);
+            }
+
+            /*
              * Some sanity checks:
              * CAPICE score is in expected range
              * Position is positive
@@ -170,10 +178,17 @@ public class CapicePrecompValidator {
                     throw new Exception("Current chrom seen before, is your " +
                             "ordering correct? at line: " + line);
                 }
-                previousPos = -1;
                 staleChroms.add(previousChrom);
                 chromMinPos.put(currentChrom, currentPos);
                 chromMaxPos.put(previousChrom, previousPos);
+
+                /*
+                 * Reset variables that keep track of things
+                 */
+                previousPos = -1;
+                refs = new HashSet<>();
+                alts = new HashSet<>();
+                nrOfLinesForPos = 0;
             }
 
             /*
@@ -245,12 +260,17 @@ public class CapicePrecompValidator {
             }
         }
 
+        /*
+         * Add last seen position on last chromosome
+         */
+        chromMaxPos.put(previousChrom, previousPos);
+
         System.out.println("Done checking " + lineNr + " lines (excl. header)");
 
         for(String chrom : chromMinPos.keySet())
         {
             System.out.println(chrom + " -> " + chromMinPos.get(chrom) + " " +
-                    "to" + chromMaxPos.get(chrom));
+                    " to " + chromMaxPos.get(chrom));
         }
 
 
