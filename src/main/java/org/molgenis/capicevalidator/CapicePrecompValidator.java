@@ -51,13 +51,13 @@ public class CapicePrecompValidator {
         /*
          * Keep track of which line we are at
          */
-        int lineNr = 0;
+        long lineNr = 0;
 
         /*
          * Remember current and previous position, must find 3 lines for 1 pos,
          * then next one must be +1 unless next chrom
          */
-        int previousPos = -1;
+        long previousPos = -1;
 
         /*
          * Must find 3 lines exactly for each pos
@@ -76,8 +76,8 @@ public class CapicePrecompValidator {
          * Also store min and max pos per chrom.
          */
         String previousChrom = null;
-        HashMap<String, Integer> chromMinPos = new HashMap<>();
-        HashMap<String, Integer> chromMaxPos = new HashMap<>();
+        HashMap<String, Long> chromMinPos = new HashMap<>();
+        HashMap<String, Long> chromMaxPos = new HashMap<>();
 
         /*
          * Keep track of unique ref and alts found at specific position
@@ -121,7 +121,7 @@ public class CapicePrecompValidator {
             }
 
             String currentChrom = split[0];
-            int currentPos = Integer.parseInt(split[1]);
+            long currentPos = Long.parseLong(split[1]);
             String ref = split[2];
             String alt = split[3];
             Double score = Double.parseDouble(split[4]);
@@ -206,12 +206,13 @@ public class CapicePrecompValidator {
 
                 /*
                  * Check if increment is 1
+                 * NOTE: due to gaps in reference genome, don't do this check
                  */
-                if(currentPos - previousPos != 1)
-                {
-                    throw new Exception("Position increment not 1 around " +
-                            "line:" + line);
-                }
+//                if(currentPos - previousPos != 1)
+//                {
+//                    throw new Exception("Position increment not 1 around " +
+//                            "line:" + line);
+//                }
 
                 /*
                  * Check if previously, there were 3 lines for this position
@@ -269,14 +270,8 @@ public class CapicePrecompValidator {
 
         for(String chrom : chromMinPos.keySet())
         {
-            System.out.println(chrom + " -> " + chromMinPos.get(chrom) + " " +
-                    " to " + chromMaxPos.get(chrom));
+            System.out.println(chrom + " -> " + chromMinPos.get(chrom) + " to " + chromMaxPos.get(chrom));
         }
-
-
-
-
-
 
     }
 }
